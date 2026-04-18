@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gaurav Jaiswal — Portfolio</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Orbitron:wght@400;700;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --neon:#00d4ff;--neon2:#bf00ff;--neon3:#00ff88;
+  --dark:#050508;--dark2:#0a0a12;--dark3:#0f0f1a;
+  --card:#12121f;--card2:#1a1a2e;--text:#e8e8f0;--muted:#6b6b8a;
+  --border:rgba(0,212,255,0.15);
+}
+html{scroll-behavior:smooth;cursor:none}
+body{background:var(--dark);color:var(--text);font-family:'Space Grotesk',sans-serif;overflow-x:hidden;line-height:1.6}
+
+#cursor{position:fixed;width:12px;height:12px;background:var(--neon);border-radius:50%;pointer-events:none;z-index:9999;transition:transform .1s;box-shadow:0 0 15px var(--neon),0 0 30px var(--neon)}
+#cursor-ring{position:fixed;width:36px;height:36px;border:1.5px solid rgba(0,212,255,0.5);border-radius:50%;pointer-events:none;z-index:9998;transition:width .2s,height .2s,border-color .2s}
+
+#loader{position:fixed;inset:0;background:var(--dark);z-index:9990;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity .8s,visibility .8s}
+#loader.hide{opacity:0;visibility:hidden;pointer-events:none}
+.loader-text{font-family:'Orbitron',monospace;font-size:clamp(28px,6vw,60px);font-weight:900;color:var(--neon);text-shadow:0 0 40px var(--neon),0 0 80px var(--neon);letter-spacing:.2em;animation:pulse 1.5s infinite}
+.loader-sub{font-size:12px;color:var(--muted);letter-spacing:.4em;margin-top:14px;animation:fadeUp 1s .5s both;text-transform:uppercase}
+.loader-bar{width:220px;height:2px;background:rgba(0,212,255,.1);margin-top:36px;border-radius:2px;overflow:hidden}
+.loader-fill{height:100%;background:linear-gradient(90deg,var(--neon),var(--neon2));width:0;animation:load 2.2s ease-out .3s both}
+@keyframes load{to{width:100%}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 6%;display:flex;align-items:center;justify-content:space-between;background:rgba(5,5,8,.85);backdrop-filter:blur(24px);border-bottom:1px solid var(--border)}
+.nav-logo{font-family:'Orbitron',monospace;font-size:17px;font-weight:700;color:var(--neon);text-shadow:0 0 20px var(--neon);letter-spacing:.15em;text-decoration:none}
+.nav-links{display:flex;gap:30px;list-style:none}
+.nav-links a{color:var(--muted);text-decoration:none;font-size:12px;letter-spacing:.08em;transition:color .3s;text-transform:uppercase}
+.nav-links a:hover{color:var(--neon);text-shadow:0 0 10px var(--neon)}
+.nav-toggle{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none}
+.nav-toggle span{width:22px;height:1.5px;background:var(--neon);border-radius:2px;display:block;transition:.3s}
+
+#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+
+#hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;z-index:1;padding:100px 6% 60px}
+.hero-inner{display:grid;grid-template-columns:1fr auto;gap:60px;align-items:center;max-width:1100px;width:100%;margin:auto}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(0,212,255,.07);border:1px solid rgba(0,212,255,.18);border-radius:50px;padding:6px 16px;font-size:11px;color:var(--neon);letter-spacing:.12em;margin-bottom:22px;animation:fadeUp 1s .6s both;text-transform:uppercase}
+.hero-badge-dot{width:6px;height:6px;background:var(--neon3);border-radius:50%;box-shadow:0 0 8px var(--neon3);animation:blink 2s infinite;flex-shrink:0}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+h1.hero-name{font-family:'Orbitron',monospace;font-size:clamp(34px,6.5vw,76px);font-weight:900;line-height:1.02;letter-spacing:-.01em;animation:fadeUp 1s .8s both}
+h1.hero-name .line1{display:block;color:#fff}
+h1.hero-name .line2{display:block;background:linear-gradient(135deg,var(--neon) 0%,var(--neon2) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-tagline{font-size:clamp(13px,1.8vw,15px);color:var(--muted);margin:18px 0 38px;letter-spacing:.05em;animation:fadeUp 1s 1s both}
+.hero-tagline strong{color:rgba(232,232,240,.85)}
+.hero-btns{display:flex;flex-wrap:wrap;gap:14px;animation:fadeUp 1s 1.2s both}
+.btn{padding:13px 28px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;text-decoration:none;transition:all .3s;letter-spacing:.06em;display:inline-flex;align-items:center;gap:8px;font-family:'Space Grotesk',sans-serif}
+.btn-primary{background:linear-gradient(135deg,var(--neon),var(--neon2));color:#000;box-shadow:0 0 24px rgba(0,212,255,.25)}
+.btn-primary:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 0 40px rgba(0,212,255,.45)}
+.btn-outline{background:transparent;color:var(--neon);border:1.5px solid rgba(0,212,255,.35)}
+.btn-outline:hover{background:rgba(0,212,255,.07);border-color:var(--neon);transform:translateY(-3px)}
+
+.hero-avatar{position:relative;width:260px;height:260px;flex-shrink:0;animation:fadeUp 1s 1.4s both}
+.avatar-ring{position:absolute;inset:-22px;border-radius:50%;border:1px solid rgba(0,212,255,.18);animation:spin 14s linear infinite}
+.avatar-ring2{position:absolute;inset:-44px;border-radius:50%;border:1px dashed rgba(191,0,255,.12);animation:spin 22s linear infinite reverse}
+.avatar-ring3{position:absolute;inset:-66px;border-radius:50%;border:1px dotted rgba(0,255,136,.07);animation:spin 32s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.avatar-core{width:260px;height:260px;border-radius:50%;background:radial-gradient(circle at 38% 35%,#1c1c44,#06060f);border:2px solid rgba(0,212,255,.28);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;box-shadow:0 0 50px rgba(0,212,255,.12),inset 0 0 50px rgba(191,0,255,.04)}
+.avatar-core::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 72% 72%,rgba(191,0,255,.1),transparent 55%);pointer-events:none}
+.avatar-svg{width:170px;height:170px;opacity:.92;position:relative;z-index:1}
+.avatar-label{position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);background:rgba(5,5,8,.9);border:1px solid rgba(0,212,255,.28);border-radius:50px;padding:5px 16px;font-size:10px;color:var(--neon);white-space:nowrap;letter-spacing:.15em;font-family:'Orbitron',monospace}
+
+.hero-stats{display:flex;gap:28px;margin-top:34px;animation:fadeUp 1s 1.4s both}
+.stat-num{font-family:'Orbitron',monospace;font-size:24px;font-weight:700;color:var(--neon)}
+.stat-label{font-size:10px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-top:2px}
+.stat+.stat{padding-left:28px;border-left:1px solid rgba(0,212,255,.15)}
+
+.scroll-indicator{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;animation:fadeUp 2.5s 2s both}
+.scroll-line{width:1px;height:46px;background:linear-gradient(180deg,rgba(0,212,255,.6),transparent);animation:scrollAnim 2s ease-in-out infinite}
+.scroll-text{font-size:10px;color:var(--muted);letter-spacing:.25em;text-transform:uppercase}
+@keyframes scrollAnim{0%,100%{opacity:0;transform:scaleY(0);transform-origin:top}50%{opacity:1;transform:scaleY(1);transform-origin:top}}
+
+section{position:relative;z-index:1;padding:90px 6%}
+.section-inner{max-width:1100px;margin:auto}
+.section-tag{display:inline-flex;align-items:center;gap:10px;font-size:11px;color:var(--neon);letter-spacing:.25em;text-transform:uppercase;margin-bottom:12px}
+.section-tag::before{content:'';width:28px;height:1px;background:var(--neon);flex-shrink:0}
+h2.section-title{font-family:'Orbitron',monospace;font-size:clamp(26px,4.5vw,44px);font-weight:700;letter-spacing:-.01em;margin-bottom:52px;background:linear-gradient(120deg,#fff 0%,rgba(255,255,255,.55) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+.glass{background:rgba(15,15,28,.85);border:1px solid var(--border);border-radius:16px;backdrop-filter:blur(12px);transition:transform .35s,border-color .35s,box-shadow .35s}
+.glass:hover{transform:translateY(-6px);border-color:rgba(0,212,255,.32);box-shadow:0 24px 48px rgba(0,0,0,.45),0 0 32px rgba(0,212,255,.07)}
+
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.about-card{padding:28px 32px}
+.about-text p{color:rgba(232,232,240,.78);font-size:15px;line-height:1.85;margin-bottom:15px}
+.about-text p strong{color:var(--neon);font-weight:500}
+.trait-list{list-style:none;display:flex;flex-direction:column;gap:12px}
+.trait-item{display:flex;align-items:center;gap:12px;font-size:14px;color:rgba(232,232,240,.85)}
+.trait-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+
+.skill-bars-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px 44px;margin-top:40px}
+.skill-bar-wrap{margin-bottom:4px}
+.skill-bar-header{display:flex;justify-content:space-between;margin-bottom:7px;font-size:13px}
+.skill-bar-header span:first-child{color:rgba(232,232,240,.85)}
+.skill-bar-header span:last-child{color:var(--neon);font-family:'Orbitron',monospace;font-size:10px}
+.skill-bar-track{height:3px;background:rgba(255,255,255,.05);border-radius:4px;overflow:hidden}
+.skill-bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--neon),var(--neon2));box-shadow:0 0 8px rgba(0,212,255,.35);width:0;transition:width 1.6s cubic-bezier(.16,1,.3,1)}
+
+.skills-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px}
+.skill-card{padding:24px 26px;border-radius:16px}
+.skill-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:16px}
+.skill-cat{font-size:11px;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;margin-bottom:8px}
+.skill-name{font-size:16px;font-weight:600;margin-bottom:16px;color:var(--text)}
+.skill-tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{padding:4px 11px;border-radius:50px;font-size:11px;border:1px solid;letter-spacing:.04em}
+.tag-blue{background:rgba(0,212,255,.06);color:var(--neon);border-color:rgba(0,212,255,.18)}
+.tag-purple{background:rgba(191,0,255,.06);color:#c070ff;border-color:rgba(191,0,255,.18)}
+.tag-green{background:rgba(0,255,136,.06);color:var(--neon3);border-color:rgba(0,255,136,.18)}
+.tag-amber{background:rgba(255,180,0,.06);color:#ffb400;border-color:rgba(255,180,0,.18)}
+
+.timeline{position:relative;padding-left:36px}
+.timeline::before{content:'';position:absolute;left:0;top:0;bottom:0;width:1px;background:linear-gradient(180deg,var(--neon),var(--neon2),transparent)}
+.tl-item{position:relative;margin-bottom:40px}
+.tl-dot{position:absolute;left:-42px;top:8px;width:14px;height:14px;border-radius:50%;background:var(--neon);box-shadow:0 0 16px var(--neon),0 0 32px rgba(0,212,255,.25);border:2px solid var(--dark)}
+.tl-card{padding:24px 28px}
+.tl-period{font-size:11px;color:var(--neon);letter-spacing:.15em;font-family:'Orbitron',monospace;margin-bottom:8px}
+.tl-role{font-size:19px;font-weight:600;color:var(--text);margin-bottom:4px}
+.tl-org{font-size:13px;color:var(--muted);margin-bottom:16px}
+.tl-points{list-style:none;display:flex;flex-direction:column;gap:7px}
+.tl-points li{font-size:14px;color:rgba(232,232,240,.72);display:flex;gap:10px;align-items:flex-start}
+.tl-points li::before{content:'▹';color:var(--neon);flex-shrink:0;margin-top:1px}
+
+.edu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
+.edu-card{padding:28px 32px}
+.edu-icon{font-size:30px;margin-bottom:14px}
+.edu-title{font-size:16px;font-weight:600;color:var(--text);margin-bottom:5px}
+.edu-sub{font-size:14px;color:var(--muted);margin-bottom:10px}
+.edu-year{font-size:11px;color:var(--neon);font-family:'Orbitron',monospace;letter-spacing:.12em}
+.cert-badge{display:inline-flex;align-items:center;gap:8px;border-radius:8px;padding:8px 14px;font-size:13px;margin-top:10px}
+
+.projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px}
+.project-card{padding:26px 28px;overflow:hidden;position:relative;border-radius:16px}
+.project-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(0,212,255,.06),transparent 60%);pointer-events:none}
+.project-thumb{height:145px;border-radius:10px;margin-bottom:20px;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-size:12px;letter-spacing:.12em;position:relative;overflow:hidden}
+.project-thumb::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 28px,rgba(0,212,255,.03) 28px,rgba(0,212,255,.03) 29px),repeating-linear-gradient(90deg,transparent,transparent 28px,rgba(0,212,255,.03) 28px,rgba(0,212,255,.03) 29px)}
+.pt1{background:linear-gradient(135deg,rgba(0,212,255,.1),rgba(191,0,255,.1));color:var(--neon)}
+.pt2{background:linear-gradient(135deg,rgba(0,255,136,.1),rgba(0,212,255,.1));color:var(--neon3)}
+.pt3{background:linear-gradient(135deg,rgba(191,0,255,.1),rgba(255,100,0,.08));color:#c070ff}
+.project-title{font-size:17px;font-weight:600;color:var(--text);margin-bottom:7px}
+.project-desc{font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:18px}
+.project-link{font-size:13px;color:var(--neon);text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:gap .2s,color .2s}
+.project-link:hover{gap:10px}
+
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:start}
+.contact-intro{color:rgba(232,232,240,.7);font-size:15px;margin-bottom:28px;line-height:1.85}
+.contact-info{display:flex;flex-direction:column;gap:14px}
+.contact-item{display:flex;align-items:center;gap:16px;padding:16px 20px;border-radius:12px}
+.contact-icon{width:42px;height:42px;border-radius:10px;background:rgba(0,212,255,.07);border:1px solid rgba(0,212,255,.18);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.contact-label{font-size:11px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-bottom:2px}
+.contact-val{font-size:14px;color:var(--text);text-decoration:none;transition:color .2s}
+.contact-val:hover{color:var(--neon)}
+.contact-form{display:flex;flex-direction:column;gap:14px}
+.form-group{display:flex;flex-direction:column;gap:6px}
+.form-group label{font-size:11px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase}
+.form-group input,.form-group textarea{background:rgba(12,12,24,.9);border:1px solid rgba(0,212,255,.14);border-radius:8px;padding:12px 15px;color:var(--text);font-size:14px;font-family:'Space Grotesk',sans-serif;outline:none;transition:border-color .3s,box-shadow .3s;resize:vertical}
+.form-group input:focus,.form-group textarea:focus{border-color:rgba(0,212,255,.45);box-shadow:0 0 0 3px rgba(0,212,255,.05)}
+.form-group textarea{min-height:115px}
+
+footer{position:relative;z-index:1;padding:36px 6%;border-top:1px solid rgba(0,212,255,.08);text-align:center}
+.footer-name{font-family:'Orbitron',monospace;font-size:14px;color:var(--neon);letter-spacing:.2em;margin-bottom:8px}
+.footer-sub{font-size:12px;color:var(--muted)}
+
+.divider{width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(0,212,255,.1),transparent)}
+
+.anim-hidden{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s ease}
+.anim-visible{opacity:1;transform:translateY(0)}
+
+@media(max-width:800px){
+  .hero-inner{grid-template-columns:1fr;text-align:center;gap:36px}
+  .hero-avatar{width:200px;height:200px;margin:0 auto}
+  .avatar-core{width:200px;height:200px}
+  .avatar-ring{inset:-16px}.avatar-ring2{inset:-32px}.avatar-ring3{inset:-48px}
+  .hero-btns{justify-content:center}
+  .hero-stats{justify-content:center}
+  .about-grid{grid-template-columns:1fr}
+  .skill-bars-grid{grid-template-columns:1fr}
+  .contact-grid{grid-template-columns:1fr}
+  .nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:rgba(5,5,8,.97);flex-direction:column;padding:20px 6%;gap:18px;border-bottom:1px solid var(--border)}
+  .nav-links.open{display:flex}
+  .nav-toggle{display:flex}
+}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<div id="loader">
+  <div class="loader-text">GJ</div>
+  <div class="loader-sub">Initializing Portfolio</div>
+  <div class="loader-bar"><div class="loader-fill"></div></div>
+</div>
+
+<canvas id="bg-canvas"></canvas>
+
+<nav>
+  <a class="nav-logo" href="#">GJ.</a>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="nav-toggle" id="nav-toggle" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-badge"><div class="hero-badge-dot"></div>Available for opportunities</div>
+      <h1 class="hero-name">
+        <span class="line1">Gaurav</span>
+        <span class="line2">Jaiswal</span>
+      </h1>
+      <p class="hero-tagline">
+        <strong>Frontend Developer</strong> &nbsp;&middot;&nbsp;
+        <strong>Fitness Coach</strong> &nbsp;&middot;&nbsp;
+        <strong>Dance Instructor</strong>
+      </p>
+      <div class="hero-btns">
+        <a href="#projects" class="btn btn-primary">View Projects &rarr;</a>
+        <a href="#contact" class="btn btn-outline">Contact Me</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><div class="stat-num">3+</div><div class="stat-label">Years Active</div></div>
+        <div class="stat"><div class="stat-num">50+</div><div class="stat-label">Clients Trained</div></div>
+        <div class="stat"><div class="stat-num">100+</div><div class="stat-label">Students Taught</div></div>
+      </div>
+    </div>
+    <div class="hero-avatar">
+      <div class="avatar-ring"></div>
+      <div class="avatar-ring2"></div>
+      <div class="avatar-ring3"></div>
+      <div class="avatar-core" id="avatar-core">
+        <svg class="avatar-svg" viewBox="0 0 170 170" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="85" cy="85" r="80" stroke="rgba(0,212,255,0.06)" stroke-width="1" stroke-dasharray="5,7"/>
+          <circle cx="85" cy="85" r="64" stroke="rgba(191,0,255,0.05)" stroke-width="1" stroke-dasharray="2,9"/>
+          <ellipse cx="85" cy="56" rx="25" ry="27" fill="rgba(0,212,255,0.12)" stroke="rgba(0,212,255,0.45)" stroke-width="1.5"/>
+          <circle cx="85" cy="56" r="4.5" fill="rgba(0,212,255,0.7)"/>
+          <path d="M50 138 Q50 96 85 89 Q120 96 120 138" fill="rgba(0,212,255,0.08)" stroke="rgba(0,212,255,0.38)" stroke-width="1.5"/>
+          <path d="M50 106 L26 126" stroke="rgba(0,212,255,0.32)" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M120 106 L144 126" stroke="rgba(0,212,255,0.32)" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="26" cy="126" r="3.5" fill="rgba(191,0,255,0.65)"/>
+          <circle cx="144" cy="126" r="3.5" fill="rgba(191,0,255,0.65)"/>
+          <line x1="60" y1="58" x2="38" y2="42" stroke="rgba(0,212,255,0.18)" stroke-width="1" stroke-dasharray="3,3"/>
+          <circle cx="38" cy="42" r="2.5" fill="rgba(0,212,255,0.4)"/>
+          <line x1="110" y1="58" x2="132" y2="42" stroke="rgba(0,212,255,0.18)" stroke-width="1" stroke-dasharray="3,3"/>
+          <circle cx="132" cy="42" r="2.5" fill="rgba(0,212,255,0.4)"/>
+          <line x1="85" y1="29" x2="85" y2="12" stroke="rgba(0,255,136,0.25)" stroke-width="1" stroke-dasharray="2,4"/>
+          <circle cx="85" cy="10" r="3" fill="rgba(0,255,136,0.5)"/>
+        </svg>
+      </div>
+      <div class="avatar-label">GAURAV.EXE</div>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <div class="scroll-line"></div>
+    <div class="scroll-text">Scroll</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-inner">
+    <div class="section-tag">About Me</div>
+    <h2 class="section-title">Who I Am</h2>
+    <div class="about-grid">
+      <div class="glass about-card about-text anim-hidden">
+        <p>A <strong>results-driven professional</strong> seamlessly blending the worlds of technology, fitness, and performance arts. I bring the same discipline and precision to coding that I apply to personal training — every project is purposeful.</p>
+        <p>With a background in <strong>Frontend Development</strong>, personal training, and choreography, I offer a rare combination of technical skill and human connection.</p>
+        <p>Based in <strong>Lucknow, India</strong> — open to remote and on-site opportunities worldwide.</p>
+      </div>
+      <div class="glass about-card anim-hidden" style="transition-delay:.15s">
+        <div class="section-tag" style="margin-bottom:18px">Core Traits</div>
+        <ul class="trait-list">
+          <li class="trait-item"><div class="trait-dot" style="background:var(--neon);box-shadow:0 0 10px var(--neon)"></div>Strong communication &amp; leadership</li>
+          <li class="trait-item"><div class="trait-dot" style="background:var(--neon2);box-shadow:0 0 10px var(--neon2)"></div>Discipline &amp; time management</li>
+          <li class="trait-item"><div class="trait-dot" style="background:var(--neon3);box-shadow:0 0 10px var(--neon3)"></div>Problem-solving mindset</li>
+          <li class="trait-item"><div class="trait-dot" style="background:var(--neon);box-shadow:0 0 10px var(--neon)"></div>Team collaboration &amp; mentoring</li>
+          <li class="trait-item"><div class="trait-dot" style="background:#ffb400;box-shadow:0 0 10px #ffb400"></div>Creative choreography &amp; performance</li>
+          <li class="trait-item"><div class="trait-dot" style="background:var(--neon2);box-shadow:0 0 10px var(--neon2)"></div>Fitness program design &amp; execution</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="skill-bars-grid anim-hidden" id="skill-bars" style="transition-delay:.2s">
+      <div class="skill-bar-wrap">
+        <div class="skill-bar-header"><span>HTML &amp; CSS</span><span>85%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" data-w="85%"></div></div>
+      </div>
+      <div class="skill-bar-wrap">
+        <div class="skill-bar-header"><span>Web Designing</span><span>80%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" data-w="80%" style="background:linear-gradient(90deg,var(--neon2),var(--neon))"></div></div>
+      </div>
+      <div class="skill-bar-wrap">
+        <div class="skill-bar-header"><span>Personal Training</span><span>92%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" data-w="92%" style="background:linear-gradient(90deg,var(--neon3),#00a040)"></div></div>
+      </div>
+      <div class="skill-bar-wrap">
+        <div class="skill-bar-header"><span>Choreography</span><span>88%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" data-w="88%" style="background:linear-gradient(90deg,#ffb400,#ff6000)"></div></div>
+      </div>
+      <div class="skill-bar-wrap">
+        <div class="skill-bar-header"><span>MS Office</span><span>78%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" data-w="78%"></div></div>
+      </div>
+      <div class="skill-bar-wrap">
+        <div class="skill-bar-header"><span>Leadership</span><span>90%</span></div>
+        <div class="skill-bar-track"><div class="skill-bar-fill" data-w="90%" style="background:linear-gradient(90deg,var(--neon2),#6600cc)"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-inner">
+    <div class="section-tag">Skills</div>
+    <h2 class="section-title">My Expertise</h2>
+    <div class="skills-grid">
+      <div class="glass skill-card anim-hidden">
+        <div class="skill-icon" style="background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.2)">💻</div>
+        <div class="skill-cat">Frontend</div>
+        <div class="skill-name">Web Development</div>
+        <div class="skill-tags">
+          <span class="tag tag-blue">HTML5</span>
+          <span class="tag tag-blue">CSS3</span>
+          <span class="tag tag-blue">Web Design</span>
+          <span class="tag tag-blue">Responsive</span>
+        </div>
+      </div>
+      <div class="glass skill-card anim-hidden" style="transition-delay:.1s">
+        <div class="skill-icon" style="background:rgba(191,0,255,.1);border:1px solid rgba(191,0,255,.2)">🖥️</div>
+        <div class="skill-cat">Office &amp; Tools</div>
+        <div class="skill-name">Computer Skills</div>
+        <div class="skill-tags">
+          <span class="tag tag-purple">MS Office</span>
+          <span class="tag tag-purple">Computer Ops</span>
+          <span class="tag tag-purple">Data Entry</span>
+        </div>
+      </div>
+      <div class="glass skill-card anim-hidden" style="transition-delay:.2s">
+        <div class="skill-icon" style="background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.2)">💪</div>
+        <div class="skill-cat">Fitness</div>
+        <div class="skill-name">Personal Training</div>
+        <div class="skill-tags">
+          <span class="tag tag-green">Fat Loss</span>
+          <span class="tag tag-green">Workout Plans</span>
+          <span class="tag tag-green">Nutrition</span>
+          <span class="tag tag-green">Tracking</span>
+        </div>
+      </div>
+      <div class="glass skill-card anim-hidden" style="transition-delay:.3s">
+        <div class="skill-icon" style="background:rgba(255,180,0,.1);border:1px solid rgba(255,180,0,.2)">🕺</div>
+        <div class="skill-cat">Performance</div>
+        <div class="skill-name">Dance &amp; Choreography</div>
+        <div class="skill-tags">
+          <span class="tag tag-amber">Choreography</span>
+          <span class="tag tag-amber">Teaching</span>
+          <span class="tag tag-amber">Stage Presence</span>
+        </div>
+      </div>
+      <div class="glass skill-card anim-hidden" style="grid-column:span 2;transition-delay:.35s">
+        <div class="skill-icon" style="background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.15)">⭐</div>
+        <div class="skill-cat">Soft Skills</div>
+        <div class="skill-name">Leadership &amp; Collaboration</div>
+        <div class="skill-tags">
+          <span class="tag tag-blue">Leadership</span>
+          <span class="tag tag-purple">Team Collaboration</span>
+          <span class="tag tag-green">Time Management</span>
+          <span class="tag tag-amber">Communication</span>
+          <span class="tag tag-blue">Problem Solving</span>
+          <span class="tag tag-purple">Mentoring</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="section-inner">
+    <div class="section-tag">Experience</div>
+    <h2 class="section-title">Work History</h2>
+    <div class="timeline">
+      <div class="tl-item anim-hidden">
+        <div class="tl-dot"></div>
+        <div class="glass tl-card">
+          <div class="tl-period">2024 &mdash; 2025</div>
+          <div class="tl-role">Gym Trainer</div>
+          <div class="tl-org">Wild Fitness 2.0 &middot; Lucknow</div>
+          <ul class="tl-points">
+            <li>Designed personalized training programs based on individual fitness goals and levels</li>
+            <li>Delivered one-on-one sessions with measurable, trackable client results</li>
+            <li>Monitored client progress and continuously adjusted workout plans</li>
+            <li>Specialized in fat loss programs and functional strength conditioning</li>
+          </ul>
+        </div>
+      </div>
+      <div class="tl-item anim-hidden" style="transition-delay:.18s">
+        <div class="tl-dot" style="background:var(--neon2);box-shadow:0 0 16px var(--neon2),0 0 32px rgba(191,0,255,.25)"></div>
+        <div class="glass tl-card">
+          <div class="tl-period" style="color:var(--neon2)">2022 &mdash; 2024</div>
+          <div class="tl-role">Dance Instructor</div>
+          <div class="tl-org">Moves Maker Academy &middot; Lucknow</div>
+          <ul class="tl-points">
+            <li>Taught diverse dance styles to students across multiple age groups</li>
+            <li>Conceptualized and executed original choreography for stage performances</li>
+            <li>Mentored students in building confidence, stage presence, and rhythm</li>
+            <li>Organized group workshops and coordinated live performance events</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- EDUCATION & CERTS -->
+<section id="education">
+  <div class="section-inner">
+    <div class="section-tag">Education &amp; Certifications</div>
+    <h2 class="section-title">Qualifications</h2>
+    <div class="edu-grid">
+      <div class="glass edu-card anim-hidden">
+        <div class="edu-icon">🎓</div>
+        <div class="edu-title">12th &mdash; Computer Science</div>
+        <div class="edu-sub">AIMS International School</div>
+        <div class="edu-year">2024</div>
+      </div>
+      <div class="glass edu-card anim-hidden" style="transition-delay:.15s">
+        <div class="edu-icon">🏅</div>
+        <div class="edu-title">Certifications</div>
+        <div class="edu-sub">Professional Credentials Earned</div>
+        <div class="edu-year">Certified</div>
+        <div class="cert-badge" style="background:rgba(0,255,136,.06);border:1px solid rgba(0,255,136,.18);color:var(--neon3)">✓ Web Page Designing</div>
+        <br>
+        <div class="cert-badge" style="background:rgba(191,0,255,.06);border:1px solid rgba(191,0,255,.18);color:#c070ff">✓ Office Automation — A Grade</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-inner">
+    <div class="section-tag">Projects</div>
+    <h2 class="section-title">My Work</h2>
+    <div class="projects-grid">
+      <div class="glass project-card anim-hidden" id="pc1">
+        <div class="project-thumb pt1">[ COMING SOON ]</div>
+        <div class="project-title">Fitness Tracker App</div>
+        <div class="project-desc">A web platform to log workouts, track body metrics, and visualize progress with interactive charts.</div>
+        <div class="skill-tags" style="margin-bottom:16px">
+          <span class="tag tag-blue">HTML</span><span class="tag tag-blue">CSS</span><span class="tag tag-purple">JavaScript</span>
+        </div>
+        <a href="#" class="project-link">View Project →</a>
+      </div>
+      <div class="glass project-card anim-hidden" id="pc2" style="transition-delay:.12s">
+        <div class="project-thumb pt2">[ COMING SOON ]</div>
+        <div class="project-title">Dance Academy Website</div>
+        <div class="project-desc">A modern, responsive website for a dance studio with class schedules, gallery, and enrollment forms.</div>
+        <div class="skill-tags" style="margin-bottom:16px">
+          <span class="tag tag-green">HTML</span><span class="tag tag-green">CSS</span><span class="tag tag-green">Responsive</span>
+        </div>
+        <a href="#" class="project-link">View Project →</a>
+      </div>
+      <div class="glass project-card anim-hidden" id="pc3" style="transition-delay:.24s">
+        <div class="project-thumb pt3">[ IN PROGRESS ]</div>
+        <div class="project-title">Portfolio v2</div>
+        <div class="project-desc">Next iteration featuring React and Three.js — full 3D scene, immersive scroll experiences, and GSAP transitions.</div>
+        <div class="skill-tags" style="margin-bottom:16px">
+          <span class="tag tag-purple">React</span><span class="tag tag-purple">Three.js</span><span class="tag tag-blue">GSAP</span>
+        </div>
+        <a href="#" class="project-link">In Progress →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-inner">
+    <div class="section-tag">Contact</div>
+    <h2 class="section-title">Get In Touch</h2>
+    <div class="contact-grid">
+      <div class="anim-hidden">
+        <p class="contact-intro">Have a project in mind, need a personal trainer, or want to collaborate? I'd love to hear from you. Let's build something great together.</p>
+        <div class="contact-info">
+          <div class="glass contact-item">
+            <div class="contact-icon">📱</div>
+            <div>
+              <div class="contact-label">Phone</div>
+              <a href="tel:+917900192837" class="contact-val">+91 7900192837</a>
+            </div>
+          </div>
+          <div class="glass contact-item">
+            <div class="contact-icon">✉️</div>
+            <div>
+              <div class="contact-label">Email</div>
+              <a href="mailto:madxboy232023@gmail.com" class="contact-val">madxboy232023@gmail.com</a>
+            </div>
+          </div>
+          <div class="glass contact-item">
+            <div class="contact-icon">🔗</div>
+            <div>
+              <div class="contact-label">LinkedIn</div>
+              <a href="https://www.linkedin.com/in/gaurav-jaiswal-713721402" target="_blank" class="contact-val">www.linkedin.com/in/gaurav-jaiswal-713721402</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="glass anim-hidden" style="padding:28px 30px;transition-delay:.18s">
+        <div class="section-tag" style="margin-bottom:20px">Send a Message</div>
+        <div class="contact-form">
+          <div class="form-group">
+            <label>Your Name</label>
+            <input type="text" placeholder="John Doe">
+          </div>
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" placeholder="john@example.com">
+          </div>
+          <div class="form-group">
+            <label>Message</label>
+            <textarea placeholder="Tell me about your project or inquiry..."></textarea>
+          </div>
+          <button class="btn btn-primary" id="submit-btn" style="width:100%;justify-content:center" onclick="handleFormSubmit(event)">Send Message →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-name">GAURAV JAISWAL</div>
+  <div class="footer-sub">Frontend Developer · Fitness Coach · Dance Instructor — Lucknow, India</div>
+  <div style="font-size:11px;color:rgba(107,107,138,.5);margin-top:10px">&copy; 2025 Gaurav Jaiswal. All rights reserved.</div>
+</footer>
+
+<script>
+(function(){
+  'use strict';
+  
+  // CURSOR
+  const cur=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{
+    mx=e.clientX;my=e.clientY;
+    cur.style.transform=`translate(${mx-6}px,${my-6}px)`;
+  });
+  (function animRing(){
+    rx+=(mx-rx)*.12;ry+=(my-ry)*.12;
+    ring.style.transform=`translate(${rx-18}px,${ry-18}px)`;
+    requestAnimationFrame(animRing);
+  })();
+  document.querySelectorAll('a,button,.glass,.btn,.project-card').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{ring.style.width='52px';ring.style.height='52px';ring.style.borderColor='rgba(0,212,255,.85)'});
+    el.addEventListener('mouseleave',()=>{ring.style.width='36px';ring.style.height='36px';ring.style.borderColor='rgba(0,212,255,.5)'});
+  });
+
+  // LOADER
+  window.addEventListener('load',()=>{setTimeout(()=>{const ldr=document.getElementById('loader');if(ldr)ldr.classList.add('hide');},2700)});
+
+  // MOBILE NAV
+  const navToggle=document.getElementById('nav-toggle');
+  const navLinks=document.getElementById('nav-links');
+  if(navToggle)navToggle.addEventListener('click',()=>navLinks.classList.toggle('open'));
+  document.querySelectorAll('.nav-links a').forEach(a=>a.addEventListener('click',()=>navLinks.classList.remove('open')));
+
+  // PARTICLE CANVAS
+  const canvas=document.getElementById('bg-canvas'),ctx=canvas.getContext('2d');
+  let W=window.innerWidth,H=window.innerHeight;
+  function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight;}
+  resize();window.addEventListener('resize',resize);
+  
+  const pts=Array.from({length:120},()=>({x:Math.random()*1600,y:Math.random()*2400,r:Math.random()*1.3+.25,vx:(Math.random()-.5)*.28,vy:(Math.random()-.5)*.28,a:Math.random()*.6+.1,c:Math.random()<.14?'191,0,255':Math.random()<.28?'0,255,136':'0,212,255'}));
+  let scrollOff=0;
+  window.addEventListener('scroll',()=>scrollOff=window.scrollY*.08,{passive:true});
+  
+  (function draw(){
+    ctx.clearRect(0,0,W,H);
+    ctx.strokeStyle='rgba(0,212,255,0.022)';ctx.lineWidth=1;
+    const gs=80;
+    for(let x=0;x<W+gs;x+=gs){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+    for(let y=-(scrollOff%gs);y<H+gs;y+=gs){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+    pts.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0)p.x=W;if(p.x>W)p.x=0;
+      if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(${p.c},${p.a})`;
+      ctx.shadowBlur=5;ctx.shadowColor=`rgba(${p.c},.4)`;
+      ctx.fill();ctx.shadowBlur=0;
+    });
+    for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){
+      const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.hypot(dx,dy);
+      if(d<95){ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.strokeStyle=`rgba(0,212,255,${.055*(1-d/95)})`;ctx.lineWidth=.5;ctx.stroke();}
+    }
+    requestAnimationFrame(draw);
+  })();
+
+  // AVATAR FLOAT
+  let tick=0;
+  const av=document.getElementById('avatar-core');
+  (function floatAv(){
+    tick+=.018;
+    if(av)av.style.transform=`translateY(${Math.sin(tick)*9}px) rotateY(${Math.sin(tick*.48)*6}deg)`;
+    requestAnimationFrame(floatAv);
+  })();
+
+  // SCROLL ANIMATIONS
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.classList.add('anim-visible');
+        if(e.target.id==='skill-bars'||e.target.classList.contains('skill-bars-grid')){
+          e.target.querySelectorAll('.skill-bar-fill').forEach(b=>{b.style.width=b.dataset.w});
+        }
+      }
+    });
+  },{threshold:.12});
+  document.querySelectorAll('.anim-hidden').forEach(el=>obs.observe(el));
+
+  // 3D TILT — project cards
+  document.querySelectorAll('.project-card').forEach(card=>{
+    card.addEventListener('mousemove',e=>{
+      const r=card.getBoundingClientRect();
+      const x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+      card.style.transform=`perspective(700px) rotateY(${x*14}deg) rotateX(${-y*10}deg) translateY(-8px) scale(1.02)`;
+      card.style.setProperty('--mx',`${(x+.5)*100}%`);
+      card.style.setProperty('--my',`${(y+.5)*100}%`);
+    });
+    card.addEventListener('mouseleave',()=>{card.style.transform='';});
+  });
+
+  // PARALLAX HERO
+  window.addEventListener('scroll',()=>{
+    const sy=window.scrollY;
+    const hi=document.querySelector('.hero-inner');
+    if(hi&&sy<window.innerHeight)hi.style.transform=`translateY(${sy*.18}px)`;
+  },{passive:true});
+
+  // FORM SUBMIT
+  window.handleFormSubmit=function(e){
+    e.preventDefault();
+    const btn=event.target;
+    btn.textContent='Sending...';btn.disabled=true;
+    setTimeout(()=>{btn.textContent='✓ Message Sent!';btn.style.background='linear-gradient(135deg,var(--neon3),#009940)';},1600);
+  };
+})();
+</script>
+</body>
+</html>
